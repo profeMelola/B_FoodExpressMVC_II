@@ -1,6 +1,8 @@
 package es.daw.foodexpressmvc.controller;
 
 import es.daw.foodexpressmvc.dto.UserRegisterDTO;
+import es.daw.foodexpressmvc.exception.PasswordsDoNotMatchException;
+import es.daw.foodexpressmvc.exception.UsernameAlreadyExistsException;
 import es.daw.foodexpressmvc.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,12 +38,23 @@ public class RegisterController {
             return "register";
         }
 
-        // Registrar usuario
-        userService.register(dto);
+        try{
+            // Registrar usuario
+            userService.register(dto);
 
+            // Redirige a login indicando que se ha registrado correctamente
+            return "redirect:/login?registered";
 
-        // Redirige a login indicando que se ha registrado correctamente
-        return "redirect:/login?registered";
+        }catch (UsernameAlreadyExistsException e){
+            bindingResult.rejectValue("username", "username.exists",e.getMessage());
+            model.addAttribute("errorMessage",e.getMessage());
+            return "register";
+        }catch(PasswordsDoNotMatchException e){
+            //bindingResult.rejectValue("confirmPassword", "password.mismatch",e.getMessage());
+            bindingResult.rejectValue("confirmPassword", "password.mismatch"); //En observación!!!
+            model.addAttribute("errorMessage",e.getMessage());
+            return "register";
+        }
 
     }
 
