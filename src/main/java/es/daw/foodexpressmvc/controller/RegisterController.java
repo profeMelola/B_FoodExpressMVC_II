@@ -50,8 +50,8 @@ public class RegisterController {
             model.addAttribute("errorMessage",e.getMessage());
             return "register";
         }catch(PasswordsDoNotMatchException e){
-            //bindingResult.rejectValue("confirmPassword", "password.mismatch",e.getMessage());
-            bindingResult.rejectValue("confirmPassword", "password.mismatch"); //En observación!!!
+            bindingResult.rejectValue("confirmPassword", "password.mismatch",e.getMessage());
+            //bindingResult.rejectValue("confirmPassword", "password.mismatch"); //En observación!!!
             model.addAttribute("errorMessage",e.getMessage());
             return "register";
         }
